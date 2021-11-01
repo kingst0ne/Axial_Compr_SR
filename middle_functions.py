@@ -37,14 +37,16 @@ z = H_tot/H
 D_k = 60*U_k/(n*m.pi)
 F_1 = D_k**2 * m.pi*0.75/4
 d = 0.5
+K_h = 0.99
+nu_ad = 0.84
 
 DATA = {}
 r1_mid = []
 for i in range(int(z)):
     r1_mid = m.sqrt(0.5*(1+d**2))
     h_lop = D_k*(1 - d)*0.5
-    C_1U_mid = U_k*r1_mid*(1 - tau - (psi_t/(2*r1_mid**2)))
-    T1_mid = T_in - (C_a**2 - C_1U_mid**2)/2010
+    C1_U_mid = U_k*r1_mid*(1 - tau - (psi_t/(2*r1_mid**2)))
+    T1_mid = T_in - (C_a**2 - C1_U_mid**2)/2010
     P1 = 0.98 * P_in * (T1_mid/T_in)**3.5
     ro_1 = P1/(R*T1_mid)
     F_1 = G/(ro_1*C_a)
@@ -52,10 +54,22 @@ for i in range(int(z)):
     D_k = round(D_k)
     D_vt = d*D_k
     U_mid = r1_mid * U_k
-    W1_mid = m.sqrt(C_a**2 + (U_mid-C_1U_mid)**2)
+    W1_mid = m.sqrt(C_a**2 + (U_mid-C1_U_mid)**2)
     a1_mid = 20.1 * m.sqrt(T1_mid)
     M1_mid = W1_mid/a1_mid
+    H_t = psi_t*U_k**2
+    L_z = H_t*K_h
+    h_ad = L_z * nu_ad
+    tau_ = 0.5
 
+    C4_Umid = U_k*r1_mid*(1 - tau_ - psi_t1/(2* r1_mid**2))
+
+    deltaC = m.sqrt(C4_Umid**2 - C1_U_mid**2)
+    T_4 = T1_mid + L_z/1004.5 - deltaC**2/2010
+    L_ad = h_ad - deltaC**2/2
+
+    pi_i = (1 + L_ad/(1004.5*T1_mid))
+    P4 = pi_i*P1
 
     break
 
