@@ -29,5 +29,37 @@ V = G/ro
 U_k = (V * m.pi * n**2 / (phi * 900 * 0.75))**(1/3)
 U_k = round(U_k)
 
+psi_t1 = 0.29
+C_a = 0.6* U_k
 H = psi_t * U_k ** 2
+
+z = H_tot/H
+D_k = 60*U_k/(n*m.pi)
+F_1 = D_k**2 * m.pi*0.75/4
+d = 0.5
+
+DATA = {}
+r1_mid = []
+for i in range(int(z)):
+    r1_mid = m.sqrt(0.5*(1+d**2))
+    h_lop = D_k*(1 - d)*0.5
+    C_1U_mid = U_k*r1_mid*(1 - tau - (psi_t/(2*r1_mid**2)))
+    T1_mid = T_in - (C_a**2 - C_1U_mid**2)/2010
+    P1 = 0.98 * P_in * (T1_mid/T_in)**3.5
+    ro_1 = P1/(R*T1_mid)
+    F_1 = G/(ro_1*C_a)
+    D_k = m.sqrt(4*F_1/(m.pi * (1 - 0.5**2)))
+    D_k = round(D_k)
+    D_vt = d*D_k
+    U_mid = r1_mid * U_k
+    W1_mid = m.sqrt(C_a**2 + (U_mid-C_1U_mid)**2)
+    a1_mid = 20.1 * m.sqrt(T1_mid)
+    M1_mid = W1_mid/a1_mid
+
+
+    break
+
+DATA['r1_mid'] = r1_mid
+
+
 stage(G,H,psi_t, pi_c, R)
