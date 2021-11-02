@@ -42,6 +42,7 @@ nu_ad = 0.84
 
 DATA = {}
 r1_mid = []
+z = 1
 for i in range(int(z)):
     r1_mid = m.sqrt(0.5*(1+d**2))
     h_lop = D_k*(1 - d)*0.5
@@ -61,17 +62,39 @@ for i in range(int(z)):
     L_z = H_t*K_h
     h_ad = L_z * nu_ad
     tau_ = 0.5
+    r4_mid_new = r1_mid
+    r4_mid = 0
+    while abs(r4_mid_new - r4_mid) > 0.00001:
+        r4_mid = r4_mid_new
+        C4_U_mid = U_k*r4_mid*(1 - tau_ - psi_t1/(2* r4_mid**2))
 
-    C4_Umid = U_k*r1_mid*(1 - tau_ - psi_t1/(2* r1_mid**2))
+        C_2 = C4_U_mid**2 - C1_U_mid**2
+        T_4 = T1_mid + L_z/1004.5 - C_2/2010
+        L_ad = h_ad - C_2/2
 
-    deltaC = m.sqrt(C4_Umid**2 - C1_U_mid**2)
-    T_4 = T1_mid + L_z/1004.5 - deltaC**2/2010
-    L_ad = h_ad - deltaC**2/2
+        pi_i = (1 + L_ad/(1004.5*T1_mid))**3.5
+        P4 = pi_i*P1
+        ro_4 = P4/(R*T_4)
+        F4 = G/(ro_4*C_a)
+        D_4 = m.sqrt(1 - 4 * F4 / (m.pi * (D_k**2)))
+        r4_mid_new = m.sqrt((1 + D_4**2)/2)
 
-    pi_i = (1 + L_ad/(1004.5*T1_mid))
-    P4 = pi_i*P1
+    alpha_1 = m.degrees(m.atan((U_mid - C1_U_mid)/C_a))
+    C2_U_mid = U_k*r4_mid*(1 - tau_ + psi_t1/(2* r4_mid**2))
+    alpha_2 = m.degrees(m.atan((U_mid - C2_U_mid)/C_a))
+    eps_rk_1 = alpha_1 - alpha_2
 
-    break
+def sechenie (r, K1, K2):
+    CC_1a = m.sqrt(phi**2 + 2*(1-tau_)*psi_t1* m.log(r/r1_mid) + 2*(1 - tau_)**2 * (r1_mid**2 - r**2))
+    CC_2a = m.sqrt(phi ** 2 - 2 * (1 - tau_) * psi_t1 * m.log(r / r1_mid) + 2 * (1 - tau_) ** 2 * (r1_mid ** 2 - r ** 2))
+    C_11a = C_a + K1 * (CC_2a - CC_1a)
+    C_22a = C_a + K2 * (CC_2a - CC_1a)
+    phi_1a = C_11a/U_k
+    phi_2a = C_22a/U_k
+
+    alpha_1sech = m.degrees(m.atan(1/phi_1a * (r*tau_ + psi_t/2*r)))
+    alpha_2sech = m.degrees(m.atan(1 / phi_2a * (r * tau_ + psi_t / 2 * r)))
+    alpha_3 = m.atan(r/phi_2a)
 
 DATA['r1_mid'] = r1_mid
 
