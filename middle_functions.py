@@ -84,7 +84,7 @@ for i in range(int(z)):
     alpha_2 = m.degrees(m.atan((U_mid - C2_U_mid)/C_a))
     eps_rk_1 = alpha_1 - alpha_2
 
-def sechenie (r, K1, K2):
+def sechenie_tau_const (r, K1, K2):
     CC_1a = m.sqrt(phi**2 + 2*(1-tau_)*psi_t1* m.log(r/r1_mid) + 2*(1 - tau_)**2 * (r1_mid**2 - r**2))
     CC_2a = m.sqrt(phi ** 2 - 2 * (1 - tau_) * psi_t1 * m.log(r / r1_mid) + 2 * (1 - tau_) ** 2 * (r1_mid ** 2 - r ** 2))
     C_11a = C_a + K1 * (CC_2a - CC_1a)
@@ -92,9 +92,34 @@ def sechenie (r, K1, K2):
     phi_1a = C_11a/U_k
     phi_2a = C_22a/U_k
 
-    alpha_1sech = m.degrees(m.atan(1/phi_1a * (r*tau_ + psi_t/2*r)))
-    alpha_2sech = m.degrees(m.atan(1 / phi_2a * (r * tau_ + psi_t / 2 * r)))
-    alpha_3 = m.atan(r/phi_2a)
+    alpha_1sech = m.degrees(m.atan(1/phi_1a * (r*tau_ + psi_t/(2*r))))
+    alpha_2sech = m.degrees(m.atan(1 / phi_2a * (r * tau_ - psi_t /( 2 * r))))
+    alpha_3sech = m.degrees(m.atan(r/phi_2a - m.tan(m.radians(alpha_2sech))))
+    alpha_4sech = m.degrees(m.atan(r/phi_1a - m.tan(m.radians(alpha_1sech))))
+    eps_rk_1 = alpha_1sech - alpha_2sech
+    eps_rk_2 = alpha_3sech - alpha_4sech
+    return
+
+def sechenie_CuR_const(r):
+    tau_sech = 1 - (1 -tau_)*(r1_mid/r)**2
+    C_11a = C_a/U_k
+    C_22a = C_a/U_k - 0.008
+    alpha_1sech = m.degrees(m.atan(1 / C_11a * (r * tau_sech + psi_t / (2 * r))))
+    alpha_2sech = m.degrees(m.atan(1 / C_22a * (r * tau_sech - psi_t / (2 * r))))
+    alpha_3sech = m.degrees(m.atan(r / C_11a - m.tan(m.radians(alpha_2sech))))
+    alpha_4sech = m.degrees(m.atan(r / C_22a - m.tan(m.radians(alpha_1sech))))
+    eps_rk_1 = alpha_1sech - alpha_2sech
+    eps_rk_2 = alpha_3sech - alpha_4sech
+    return
+
+
+
+
+
+sechenie_tau_const(r = 0.55, K1= 2.8, K2 = 7.2)
+sechenie_CuR_const(r = 0.55)
+
+
 
 DATA['r1_mid'] = r1_mid
 
