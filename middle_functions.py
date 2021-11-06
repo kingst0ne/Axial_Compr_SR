@@ -96,6 +96,7 @@ for i in range(int(z)):
 def profiling(r, stage, alpha_1sech, alpha_2sech, eps_rk_1, ins_ang):
     alpha_1air = alpha_1sech - ins_ang
     m_ = 0.23*(0.45**2)  + 0.002*alpha_2sech
+    #!!!TODO расписать нормально b/t
     tetta_prof = (eps_rk_1 - ins_ang)/(1 - m_*(m.sqrt(1/b_t(stage))))
     alpha_2air = (alpha_2sech - ins_ang)
     return
