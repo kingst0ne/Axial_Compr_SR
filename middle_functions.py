@@ -1,7 +1,16 @@
 import math as m
 import CoolProp as cp
 
-def stage (G, H, psi_t, pi_c, R):
+def b_t(stage):
+    #костыль костылевый
+    b = [0.96, 1, 1.15, 1.25, 1.25, 1.35, 1.35, 1.55, 1.2, 1.2]
+    return b[stage-1]
+
+def h_b(stage):
+    h = [2.5, 2.3, 2.1, 1.95, 1.8, 1.6, 1.5, 1.5, 1.5, 1.5]
+    return h[stage-1]
+
+def stage_ (G, H, psi_t, pi_c, R):
 
 
     pass
@@ -84,6 +93,13 @@ for i in range(int(z)):
     alpha_2 = m.degrees(m.atan((U_mid - C2_U_mid)/C_a))
     eps_rk_1 = alpha_1 - alpha_2
 
+def profiling(r, stage, alpha_1sech, alpha_2sech, eps_rk_1, ins_ang):
+    alpha_1air = alpha_1sech - ins_ang
+    m_ = 0.23*(0.45**2)  + 0.002*alpha_2sech
+    tetta_prof = (eps_rk_1 - ins_ang)/(1 - m_*(m.sqrt(1/b_t(stage))))
+    alpha_2air = (alpha_2sech - ins_ang)
+    return
+
 def sechenie_tau_const (r, K1, K2):
     CC_1a = m.sqrt(phi**2 + 2*(1-tau_)*psi_t1* m.log(r/r1_mid) + 2*(1 - tau_)**2 * (r1_mid**2 - r**2))
     CC_2a = m.sqrt(phi ** 2 - 2 * (1 - tau_) * psi_t1 * m.log(r / r1_mid) + 2 * (1 - tau_) ** 2 * (r1_mid ** 2 - r ** 2))
@@ -98,6 +114,7 @@ def sechenie_tau_const (r, K1, K2):
     alpha_4sech = m.degrees(m.atan(r/phi_1a - m.tan(m.radians(alpha_1sech))))
     eps_rk_1 = alpha_1sech - alpha_2sech
     eps_rk_2 = alpha_3sech - alpha_4sech
+    profiling(r, 1, alpha_1sech, alpha_2sech, eps_rk_1, ins_ang=2)
     return
 
 def sechenie_CuR_const(r):
@@ -110,6 +127,8 @@ def sechenie_CuR_const(r):
     alpha_4sech = m.degrees(m.atan(r / C_22a - m.tan(m.radians(alpha_1sech))))
     eps_rk_1 = alpha_1sech - alpha_2sech
     eps_rk_2 = alpha_3sech - alpha_4sech
+    profiling(r, 1, alpha_1sech, alpha_2sech, ins_ang=2)
+
     return
 
 
@@ -124,4 +143,4 @@ sechenie_CuR_const(r = 0.55)
 DATA['r1_mid'] = r1_mid
 
 
-stage(G,H,psi_t, pi_c, R)
+stage_(G,H,psi_t, pi_c, R)
